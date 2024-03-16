@@ -1,7 +1,8 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
+import { FontAwesome5 } from '@expo/vector-icons'
+
 import Header from '../../components/header'
 import CircleButton from '../../components/CircleButton'
-import { Feather } from '@expo/vector-icons'
 
 const Detail = (): JSX.Element => {
   return (
@@ -19,7 +20,7 @@ const Detail = (): JSX.Element => {
         </Text>
       </ScrollView>
       <CircleButton style={{ top: 160, bottom: 'auto' }}>
-        <Feather name='plus' size={40} />
+        <FontAwesome5 name='pen' size={30} />
       </CircleButton>
     </View>
   )
