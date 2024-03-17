@@ -1,8 +1,13 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
+import { router } from 'expo-router'
 
 import Header from '../../components/header'
 import CircleButton from '../../components/CircleButton'
+
+const handlePress = (): void => {
+  router.push('/memo/edit')
+}
 
 const Detail = (): JSX.Element => {
   return (
@@ -19,7 +24,7 @@ const Detail = (): JSX.Element => {
           いいい
         </Text>
       </ScrollView>
-      <CircleButton style={{ top: 160, bottom: 'auto' }}>
+      <CircleButton onPress={handlePress} style={{ top: 160, bottom: 'auto' }}>
         <FontAwesome5 name='pen' size={30} />
       </CircleButton>
     </View>
