@@ -4,7 +4,6 @@ import {
 import { FontAwesome5 } from '@expo/vector-icons'
 import { router } from 'expo-router'
 
-import Header from '../../components/header'
 import CircleButton from '../../components/CircleButton'
 
 const handlePress = (): void => {
@@ -14,7 +13,6 @@ const handlePress = (): void => {
 const Edit = (): JSX.Element => {
   return (
     <KeyboardAvoidingView behavior='height' style={styles.container}>
-      <Header />
       <View style={styles.inputContainer}>
         <TextInput multiline style={styles.input} value={'買い物\nリスト'} />
       </View>
