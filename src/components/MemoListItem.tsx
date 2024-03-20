@@ -2,13 +2,23 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { Link } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons'
 
-const MemoListItem = (): JSX.Element => {
+import { type Memo } from '../../types/memo'
+
+interface Props {
+  memo: Memo
+}
+
+const MemoListItem = (props: Props): JSX.Element | null => {
+  const { memo } = props
+  const { bodyText, updateAt } = memo
+  if (bodyText === null || updateAt === null) { return null }
+  const dateString = updateAt.toDate().toLocaleDateString('ja-JP')
   return (
     <Link href='/memo/detail' asChild>
       <TouchableOpacity style={styles.memoListItem}>
         <View>
-          <Text style={styles.memoListItemTitle}>買い物リスト</Text>
-          <Text style={styles.memoListItemData}>2023年10月1日 10:00</Text>
+          <Text numberOfLines={1} style={styles.memoListItemTitle}>{bodyText}</Text>
+          <Text style={styles.memoListItemData}>{dateString}</Text>
         </View>
         <TouchableOpacity>
           <FontAwesome name='close' size={30} color='#B0B0B0' />
