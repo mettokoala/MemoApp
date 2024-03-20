@@ -1,22 +1,44 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import {
-  View, TextInput, StyleSheet, KeyboardAvoidingView
+  View, TextInput, StyleSheet
 } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { router } from 'expo-router'
+import { collection, addDoc, Timestamp } from 'firebase/firestore'
+import { db, auth } from '../../config'
+import { useState } from 'react'
 
+import KeyboardAvoidingView from '../../components/KeyboardAvoidingView'
 import CircleButton from '../../components/CircleButton'
 
-const handlePress = (): void => {
+// Firebaseに非同期でデータ登録
+const handlePress = async (bodyText: string): Promise<void> => {
+  if (auth.currentUser === null) { return }
+  const ref = collection(db, `users/${auth.currentUser.uid}/memos`)
+  await addDoc(ref, {
+    bodyText,
+    updateAt: Timestamp.fromDate(new Date())
+  }).catch((error) => {
+    console.log(error)
+  })
   router.back()
 }
 
 const Create = (): JSX.Element => {
+  const [bodyText, setBodyText] = useState('')
   return (
-    <KeyboardAvoidingView behavior='height' style={styles.container}>
+    <KeyboardAvoidingView style={styles.container}>
       <View style={styles.inputContainer}>
-        <TextInput multiline style={styles.input} value='' />
+        <TextInput
+          multiline
+          style={styles.input}
+          value={bodyText}
+          onChangeText={(text) => { setBodyText(text) }}
+          autoFocus
+        />
       </View>
-      <CircleButton onPress={handlePress} >
+      <CircleButton onPress={() => { handlePress(bodyText) }} >
         <FontAwesome5 name='check' size={40} />
       </CircleButton>
     </KeyboardAvoidingView>
