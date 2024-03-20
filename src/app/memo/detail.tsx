@@ -1,28 +1,41 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
+import { onSnapshot, doc } from 'firebase/firestore'
+import { useState, useEffect } from 'react'
 
 import CircleButton from '../../components/CircleButton'
+import { auth, db } from '../../config'
+import { type Memo } from '../../../types/memo'
 
-const handlePress = (): void => {
-  router.push('/memo/edit')
+const handlePress = (id: string): void => {
+  router.push({ pathname: '/memo/edit', params: { id } })
 }
 
 const Detail = (): JSX.Element => {
+  const id = String(useLocalSearchParams().id)
+  const [memo, setMemo] = useState<Memo | null>(null)
+  useEffect(() => {
+    if (auth.currentUser === null) { return }
+    const ref = doc(db, `users/${auth.currentUser.uid}/memos`, id)
+    const unSubscribe = onSnapshot(ref, (memoDoc) => {
+      const { bodyText, updateAt } = memoDoc.data() as Memo
+      setMemo({ id: memoDoc.id, bodyText, updateAt })
+    })
+    return unSubscribe
+  })
   return (
     <View style={styles.container}>
       <View style={styles.memoHeader}>
-        <Text style={styles.memoTitle}>買い物リスト</Text>
-        <Text style={styles.memoDate}>2023年10月1日 10:00</Text>
+        <Text style={styles.memoTitle} numberOfLines={1}>{memo?.bodyText}</Text>
+        <Text style={styles.memoDate}>{memo?.updateAt?.toDate().toLocaleDateString('ja-JP')}</Text>
       </View>
       <ScrollView style={styles.memoBody}>
         <Text style={styles.memoBodyText}>
-          買い物リスト
-          あああ
-          いいい
+          {memo?.bodyText}
         </Text>
       </ScrollView>
-      <CircleButton onPress={handlePress} style={{ top: 60, bottom: 'auto' }}>
+      <CircleButton onPress={() => { handlePress(id) }} style={{ top: 60, bottom: 'auto' }}>
         <FontAwesome5 name='pen' size={30} />
       </CircleButton>
     </View>

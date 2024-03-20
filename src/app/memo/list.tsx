@@ -29,7 +29,6 @@ const List = (): JSX.Element => {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const remoteMemos: Memo[] = []
       snapshot.forEach((doc) => {
-        console.log(doc.id)
         const { bodyText, updateAt } = doc.data()
         remoteMemos.push({
           id: doc.id,
