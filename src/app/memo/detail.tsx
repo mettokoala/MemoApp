@@ -23,7 +23,7 @@ const Detail = (): JSX.Element => {
       setMemo({ id: memoDoc.id, bodyText, updateAt })
     })
     return unSubscribe
-  })
+  }, [])
   return (
     <View style={styles.container}>
       <View style={styles.memoHeader}>

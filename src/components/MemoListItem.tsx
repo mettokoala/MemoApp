@@ -1,11 +1,32 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { Link } from 'expo-router'
 import { FontAwesome } from '@expo/vector-icons'
+import { deleteDoc, doc } from 'firebase/firestore'
 
 import { type Memo } from '../../types/memo'
+import { auth, db } from '../config'
 
 interface Props {
   memo: Memo
+}
+
+const handlePress = (id: string): void => {
+  if (auth.currentUser === null) { return }
+  const ref = doc(db, `users/${auth.currentUser.uid}/memos`, id)
+  Alert.alert('メモを削除します', '宜しいですか？', [
+    {
+      text: 'キャンセル'
+    },
+    {
+      text: '削除する',
+      // iosだけ赤くなる
+      style: 'destructive',
+      onPress: () => {
+        deleteDoc(ref)
+          .catch(() => { Alert.alert('削除に失敗しました') })
+      }
+    }
+  ])
 }
 
 const MemoListItem = (props: Props): JSX.Element | null => {
@@ -22,7 +43,7 @@ const MemoListItem = (props: Props): JSX.Element | null => {
           <Text numberOfLines={1} style={styles.memoListItemTitle}>{bodyText}</Text>
           <Text style={styles.memoListItemData}>{dateString}</Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => { handlePress(memo.id) }}>
           <FontAwesome name='close' size={30} color='#B0B0B0' />
         </TouchableOpacity>
       </TouchableOpacity>
